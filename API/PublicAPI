@@ -1,0 +1,83 @@
+using System.Text;
+using System.IO;
+using AGRIC.Application.Entity;
+using AGRIC.Application.Business;
+using AGRIC.Util.Extension;
+using System.Linq;
+using AGRIC.Application.Code;
+
+namespace AGRIC.Application.Web.Areas.AGRIC.Controllers
+{
+    /// <summary>
+    /// Name: PublicControl
+    /// Author: 超级管理员
+    /// Date: 2018-04-11 15:36
+    /// Company: 2012-2018 AGRICsoft ningbo co.ltd
+    /// Description: 公共接口
+    /// </summary>
+    [HandlerLogin(LoginMode.Ignore)]
+    public class PulicController : MvcControllerBase
+    {
+     #region 随机生成不重字符
+        private int rep = 0;
+        
+        /// <summary> 
+        /// 生成随机数字字符串 
+        /// </summary> 
+        /// <param name="codeCount">待生成的位数</param> 
+        /// <returns>生成的数字字符串</returns> 
+        public  string GenerateCheckCodeNum(int codeCount)
+        {
+            string str = string.Empty;
+            long num2 = DateTime.Now.Ticks + this.rep;
+            this.rep++;
+            Random random = new Random(((int)(((ulong)num2) & 0xffffffffL)) | ((int)(num2 >> this.rep)));
+            for (int i = 0; i < codeCount; i++)
+            {
+                int num = random.Next();
+                str = str + ((char)(0x30 + ((ushort)(num % 10)))).ToString();
+            }
+            return str;
+        }
+        /// <summary> 
+        /// 生成随机字母字符串(数字字母混和) 
+        /// </summary> 
+        /// <param name="codeCount">待生成的位数</param> 
+        /// <returns>生成的字母字符串</returns> 
+        public string GenerateCheckCode(int codeCount)
+        {
+            string str = string.Empty;
+            long num2 = DateTime.Now.Ticks + this.rep;
+            this.rep++;
+            Random random = new Random(((int)(((ulong)num2) & 0xffffffffL)) | ((int)(num2 >> this.rep)));
+            for (int i = 0; i < codeCount; i++)
+            {
+                char ch;
+                int num = random.Next();
+                if ((num % 2) == 0)
+                {
+                    ch = (char)(0x30 + ((ushort)(num % 10)));
+                }
+                else
+                {
+                    ch = (char)(0x41 + ((ushort)(num % 0x1a)));
+                }
+                str = str + ch.ToString();
+            }
+            return str;
+        }
+        #endregion
+
+        #region 发送短信
+        /// <summary> 
+        /// 发送短信
+        /// </summary> 
+        /// <param name="Mobile">手机号码</param> 
+        /// <param name="MsgType">短信类型</param> 
+        /// <returns>生成的字母字符串</returns> 
+        public string GetMobileCode(string Mobile,string MsgType)
+        {
+            return new SMSBLL().send(Mobile,MsgType);
+        }
+        #endregion
+        }
