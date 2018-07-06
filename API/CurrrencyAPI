@@ -1,0 +1,113 @@
+using AGRIC.Application.Entity.AGRIC;
+using AGRIC.Application.Business.AGRIC;
+using AGRIC.Util;
+using AGRIC.Util.WebControl;
+using System.Web.Mvc;
+using System;
+using System.Net;
+using System.Text;
+using System.IO;
+using AGRIC.Application.Entity;
+using AGRIC.Util.Extension;
+using System.Linq;
+using AGRIC.Application.Code;
+using System.Collections.Generic;
+
+namespace AGRIC.Application.Web.Areas.AGRIC.Controllers
+{
+    /// <summary>
+    /// Name: CurrrencyControl
+    /// Author: 超级管理员
+    /// Date: 2018-04-11 15:36
+    /// Company: 2012-2018 AGRICsoft ningbo co.ltd
+    /// Description: 公共接口
+    /// </summary>
+
+    public class CurrencyController : MvcControllerBase
+    {
+        CurrencyBLL currencyBLL = new CurrencyBLL();
+        /// <summary>
+        /// 获取钱包数据统计值
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public ActionResult UserCurrencyList(string UserId)
+        {
+            List<AGRIC_CurrencyEntity> currencyList = currencyBLL.GetList().Where(m => m.UserId == UserId).OrderBy(m => m.SortCode).ToList();
+
+            return ToJsonResult(currencyList);
+        }
+        /// <summary>
+        /// 获取钱包单个币种信息
+        /// </summary>
+        /// <param name="UserId">用户编号</param>
+        /// <param name="CurrencyName">币种名称</param>
+        /// <returns></returns>
+        public ActionResult UserCurrency(string UserId,string CurrencyName)
+        {
+            AGRIC_CurrencyEntity currencyList = currencyBLL.GetList().Where(m => m.UserId == UserId && m.CurrencyName == CurrencyName).FirstOrDefault();
+
+            return ToJsonResult(currencyList);
+        }
+        /// <summary>
+        /// 获取糖果信息
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public ActionResult UserCandy(string UserId) {
+            return ToJsonResult(currencyBLL.UserCandy(UserId));
+           
+        }
+        /// <summary>
+        /// 提取有效的获取记录
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public ActionResult UserCurrencyLogList(string UserId)
+        {
+           return ToJsonResult( currencyBLL.UserCurrencyLogList(UserId));
+        }
+        /// <summary>
+        /// 获取最新的收益记录
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public ActionResult UserNewCurrencyLogList(string UserId)
+        {
+          return ToJsonResult( currencyBLL.UserNewCurrencyLogList(UserId));
+        }
+        /// <summary>
+        /// 获取最新的收益记录
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public ActionResult UserAllCurrencyLogList(string UserId,string CurrencyId="")
+        {
+            return ToJsonResult( currencyBLL.UserAllCurrencyLogList(UserId,CurrencyId));
+           
+        }
+        /// <summary>
+        /// 领取资产
+        /// </summary>
+        /// <param name="keyValue"></param>
+        /// <returns></returns>
+        public ActionResult CollectCurrency(string keyValue)
+        {
+         return ToJsonResult( currencyBLL.CollectCurrency(keyValue));
+           
+        }
+        /// <summary>
+        /// 获取昨日收益
+        /// </summary>
+        /// <param name="UserId"></param>
+        /// <returns></returns>
+        public ActionResult YestordayCurrency(string UserId)
+        {
+            return ToJsonResult( currencyBLL.YestordayCurrency(UserId));
+                  
+        }
+
+
+    }
+    
+}
